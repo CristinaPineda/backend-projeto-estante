@@ -15,4 +15,5 @@ const usuarioModel = new mongoose.Schema({
         required: true },
 });
 
+
 module.exports = usuarioModel;

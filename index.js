@@ -3,10 +3,23 @@ const mongoose = require("mongoose");
 const estanteModel = require("../backend-projeto-estante/models/estante");
 const usuarioModel = require("../backend-projeto-estante/models/usuario");
 
-mongoose.connect("mongodb://localhost:27017/Projeto-Estante",{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// mongoose.connect("mongodb://localhost:3000/Projeto-Estante",{
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
+
+mongoose
+  .connect(
+    'mongodb://localhost:3000', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => {
+    console.log('Conectado com o Mongo')
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));
 
 const Estante = mongoose.model("Estante", estanteModel);
 const Usuario = mongoose.model("Usuario", usuarioModel);
@@ -19,6 +32,17 @@ const port = 3000;
 app.get("/", (req, res) => {
   res.send("Bem-Vindo ao Projeto-Estante!");
 });
+
+app.post("/usuario", async (req,res) => {
+  const { nome,idade,nacionalidade,quantidade } = req.body;
+  // const usuario = { nome, idade, nacionalidade, quantidade }
+  try {
+    await Usuario.create({ nome,idade,nacionalidade,quantidade })
+    return res.send({message:"Usuario incluído com sucesso!"})
+  } catch (err) {
+    return res.send({"erro": err})
+  }
+})
 
 app.put('/estante/:id', async (req, res) => {
   const id = req.params.id;
@@ -44,21 +68,7 @@ app.delete('/estante/:id', async (req, res) => {
 });
 
 
-// [GET] / - Home
-app.get("/", (req, res) => {
-  res.send("Bem-Vindo ao Projeto-Estante!");
-});
 
-app.post("/usuario", async (req,res) => {
-  const {
-    nome,idade,nacionalidade,quantidade
-  } = req.body;
-  const usuario = { nome,  idade, nacionalidade, quantidade }
-  const novo = await usuarioModel.create(
-    usuario
-  )
-  res.send({message:"Usuario incluído com sucesso!"})
-})
 
 app.put('/usuario/:id', async (req, res) => {
   const id = req.params.id;
