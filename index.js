@@ -49,6 +49,17 @@ app.get("/", (req, res) => {
   res.send("Bem-Vindo ao Projeto-Estante!");
 });
 
+app.post("/usuario", async (req,res) => {
+  const {
+    nome,idade,nacionalidade,quantidade
+  } = req.body;
+  const usuario = { nome,  idade, nacionalidade, quantidade }
+  const novo = await usuarioModel.create(
+    usuario
+  )
+  res.send({message:"Usuario incluído com sucesso!"})
+})
+
 app.put('/usuario/:id', async (req, res) => {
   const id = req.params.id;
 

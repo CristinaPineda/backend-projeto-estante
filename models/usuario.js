@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
 const usuarioModel = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true },
     nome: {
         type: String,
         required: true },
