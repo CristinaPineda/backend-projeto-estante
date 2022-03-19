@@ -1,33 +1,26 @@
-const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
-const estanteModel = require("../backend-projeto-estante/models/estante");
-const usuarioModel = require("../backend-projeto-estante/models/usuario");
+const express = require("express");
+const session = require("express-session");
+// const estanteModel = require("../backend-projeto-estante/models/estante");
+// const usuarioModel = require("../backend-projeto-estante/models/usuario");
 
-// mongoose.connect("mongodb://localhost:3000/Projeto-Estante",{
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
+// const Estante = mongoose.model("Estante", estanteModel);
+// const Usuario = mongoose.model("Usuario", usuarioModel);
 
-mongoose
-  .connect(
-    'mongodb://localhost:3000', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => {
-    console.log('Conectado com o Mongo')
-    app.listen(3000);
-  })
-  .catch((err) => console.log(err));
-
-const Estante = mongoose.model("Estante", estanteModel);
-const Usuario = mongoose.model("Usuario", usuarioModel);
+const SECRET = process.env.SECRET;
 
 const app = express();
 
 const port = 3000;
 
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+app.use(session({ secret: SECRET }));
 // [GET] / - Home
 app.get("/", (req, res) => {
   res.send("Bem-Vindo ao Projeto-Estante!");
@@ -93,6 +86,7 @@ app.delete('/usuario/:id', async (req, res) => {
   res.send({ message: 'Usuário excluído com sucesso' });
 });
 
+const BancoDados = require('./models/connection')
 app.listen(port, () => {
   console.info(`App rodando em: http://localhost:${port}`);
 });
