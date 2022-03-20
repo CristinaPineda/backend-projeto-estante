@@ -9,6 +9,4 @@ mongoose
     console.error(err);
   });
 
-const db = mongoose.connection;
-
-module.exports = db;
+module.exports = mongoose;
