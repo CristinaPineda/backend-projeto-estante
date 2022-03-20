@@ -4,14 +4,11 @@ require('dotenv').config();
 const { KEY, URI } = process.env;
 
 mongoose
-    .connect(`${KEY}${URI}`, {})
-    .then(() => {
-        console.log('MongodbAtlas conectado');
-    })
-    .catch((err) => {
-        console.error(err);
-    });
+  .connect(`${KEY}${URI}`)
+  .catch((err) => {
+    console.error(err);
+  });
 
-const bd = mongoose.connection;
+const db = mongoose.connection;
 
-module.exports = bd;
+module.exports = db;

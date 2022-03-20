@@ -1,44 +1,53 @@
 require('dotenv').config();
+const cors = require('cors');
+const bodyParser = require('body-parser');
 // const mongoose = require("mongoose");
 const express = require('express');
-// const session = require("express-session");
+const session = require('express-session');
 // const estanteModel = require("../backend-projeto-estante/models/estante");
-const Usuario = require('./models/usuario');
+const Usuario = require('./models/Usuario');
 
 // const Estante = mongoose.model("Estante", estanteModel);
 // const Usuario = mongoose.model("Usuario", usuarioModel);
 
-// eslint-disable-next-line no-unused-vars
-const BancoDados = require('./models/connection');
-
-// const SECRET = process.env.SECRET;
-
-const app = express();
+const SECRET = process.env.SECRET;
 
 const port = 3000;
 
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
 app.use(
-    express.urlencoded({
-        extended: true,
-    })
+  express.urlencoded({
+    extended: true,
+  })
 );
 
-// app.use(session({ secret: SECRET }));
+app.use(session({ secret: SECRET }));
+
+// eslint-disable-next-line no-unused-vars
+const db = require('./models/connection');
 
 
-app.post('/usuario', async (req,res) => {
+app.get('/usuario', (req, res) => {
+  return res.send({ message: 'pagina do usuario'});
+});
+
+app.post('/usuario', async (req, res) => {
+  try {
     const { nome, idade, nacionalidade, qtdlivros } = req.body;
-    console.log(req.body);
+    console.log(req);
     if(!nome){
-        res.status(422).json({error: 'nome não inserido'});
+      res.status(422).send({error: 'nome não inserido'});
+    } else {
+      const usuario = { nome, idade, nacionalidade, qtdlivros };
+      await Usuario.create(usuario);
+      return res.status(201).send({message:'Usuario incluído com sucesso!', ...usuario});
     }
-    const usuario = { nome, idade, nacionalidade, qtdlivros };
-    try {
-        await Usuario.create(usuario);
-        return res.status(201).json({message:'Usuario incluído com sucesso!', ...usuario});
-    } catch (err) {
-        res.status(500).json({err: err});
-    }
+  } catch (err) {
+    res.status(500).send({err: err});
+  }
 });
 
 // app.put('/estante/:id', async (req, res) => {
@@ -91,9 +100,9 @@ app.post('/usuario', async (req,res) => {
 // });
 
 app.get('/', (req, res) => {
-    res.send('Bem-Vindo ao Projeto-Estante!');
+  res.send('Bem-Vindo ao Projeto-Estante!');
 });
 
 app.listen(port, () => {
-    console.info(`App rodando em: http://localhost:${port}`);
+  console.info(`App rodando em: http://localhost:${port}`);
 });
