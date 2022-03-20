@@ -1,21 +1,19 @@
 const router = require('express').Router();
 const Usuario = require('../models/Usuario');
 
-router.get('/', (req, res) => {
+
+// fazer um get all aki!
+router.get('/', (req, res) => { 
   return res.send({ message: 'pagina do usuario'});
 });
 
 router.post('/', async (req, res) => {
   try {
     const { nome, idade, nacionalidade, qtdlivros } = req.body;
-    if(!nome){
-      res.status(422).send({error: 'nome não inserido'});
-    } else {
-      const usuario = { nome, idade, nacionalidade, qtdlivros };
-      const user = await Usuario.create(usuario);
-      const _id = user._id;
-      return res.status(201).send({message:'Usuario incluído com sucesso!', id: _id, ...usuario});
-    }
+    const usuario = { nome, idade, nacionalidade, qtdlivros };
+    const user = await Usuario.create(usuario);
+    const _id = user._id;
+    res.status(201).send({message:'Usuario incluído com sucesso!', id: _id, ...usuario});
   } catch (err) {
     res.status(500).send({err: err});
   }
