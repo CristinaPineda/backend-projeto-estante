@@ -24,7 +24,11 @@ app.use(
   })
 );
 
-app.use(session({ secret: SECRET }));
+app.use(session({
+  secret: SECRET,
+  resave: true,
+  saveUninitialized: true,
+}));
 
 // eslint-disable-next-line no-unused-vars
 const db = require('./models/connection');
@@ -37,13 +41,13 @@ app.get('/usuario', (req, res) => {
 app.post('/usuario', async (req, res) => {
   try {
     const { nome, idade, nacionalidade, qtdlivros } = req.body;
-    console.log(req);
     if(!nome){
       res.status(422).send({error: 'nome não inserido'});
     } else {
       const usuario = { nome, idade, nacionalidade, qtdlivros };
-      await Usuario.create(usuario);
-      return res.status(201).send({message:'Usuario incluído com sucesso!', ...usuario});
+      const user = await Usuario.create(usuario);
+      const _id = user._id;
+      return res.status(201).send({message:'Usuario incluído com sucesso!', id: _id, ...usuario});
     }
   } catch (err) {
     res.status(500).send({err: err});
