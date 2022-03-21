@@ -3,9 +3,30 @@ const Usuario = require('../models/Usuario');
 
 
 // fazer um get all aki!
-router.get('/', (req, res) => { 
-  return res.send({ message: 'pagina do usuario'});
+router.get('/', async (req, res) => { 
+  try {
+    const users = await Usuario.find();
+    res.status(200).send(users);
+    
+  } catch (err) {
+    res.status(500).send({ err: err });
+  };
 });
+
+router.get('/:id', async (req, res) => {
+  try {
+    const idUser = req.params.idUser;
+    const userId = await Usuario.findOne({ idUser: idUser });
+    if(!userId) {
+      res.status(422).send({ message: 'Usuário não encontrado!'});
+      return;
+    }
+    res.status(200).send(userId);
+  } catch (err) {
+    res.status(500).send({ err: err });
+  };
+});
+
 
 router.post('/', async (req, res) => {
   try {
@@ -21,28 +42,35 @@ router.post('/', async (req, res) => {
 
 module.exports = router;
 
-// app.put('/estante/:id', async (req, res) => {
-//   const id = req.params.id;
+router.put('/usuario/:id', async (req, res) => {
+  try {
+    const upDateUser = await Usuario.updateOne({ idUser: idUse }, use);
+    if(upDateUser.matchedCount === 0) {
+      res.status(422).send({ message: 'Usuário não encontrado!'});
+      return;
+    }
+    res.status(200).send({ message: `Usuario ${idUse} atualizado com sucesso!`});
+  } catch (err) {
+    res.status(500).send({ err: err });
+  };
+});
 
-//   const estante = await estanteModel.findById(id);
-//   const novoLivro = req.body;
+router.delete('/usuario/:id', async (req, res) => {
+  const idUser = req.params.idUser;
+  const user = await Usuario.findOne({ idUser: idUser});
 
-//   await estanteModel.findOneAndUpdate({ _id: id }, novoLivro);
-  
-//   const livroAtualizado = await estanteModel.findById(id);
+  if(!user) {
+    res.status(422).send({ message: 'Usuário não encontrado!'});
+    return;
+  };
 
-//   res.send(livroAtualizado);
-// });
-
-// app.delete('/estante/:id', async (req, res) => {
-//   const id = req.params.id;
- 
-//   const estante = await estanteModel.findById(id);
-
-//   await estanteModel.findByIdAndDelete(id);
-  
-//   res.send({ message: 'Livro excluído com sucesso' });
-// });
+  try {
+    await Usuario.deleteOne({ idUser: idUser });
+    res.status(200).send({ message: "Usuario removido com sucesso!" });
+  } catch (err) {
+    res.status(500).send({ err: err });
+  };
+});
 
 
 
