@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const Usuario = require('../models/Usuario');
 
-
-// fazer um get all aki!
 router.get('/', async (req, res) => { 
   try {
     const users = await Usuario.find();
@@ -10,7 +8,7 @@ router.get('/', async (req, res) => {
     
   } catch (err) {
     res.status(500).send({ err: err });
-  };
+  }
 });
 
 router.get('/:id', async (req, res) => {
@@ -23,7 +21,7 @@ router.get('/:id', async (req, res) => {
     res.status(200).send(userId);
   } catch (err) {
     res.status(500).send({ err: err });
-  };
+  }
 });
 
 
@@ -43,7 +41,11 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const upDateUser = await Usuario.updateOne({ _id: id });
+    const { id } = req.params;
+    const { nome, idade, nacionalidade, qtdlivros } = req.body;
+    const usuario = { nome, idade, nacionalidade, qtdlivros };
+    
+    const upDateUser = await Usuario.updateOne({ _id: id }, usuario);
     if(upDateUser.matchedCount === 0) {
       res.status(422).send({ message: 'Usuário não encontrado!'});
       return;
@@ -51,49 +53,23 @@ router.put('/:id', async (req, res) => {
     res.status(200).send({ message: `Usuario ${id} atualizado com sucesso!`});
   } catch (err) {
     res.status(500).send( {err: err.message } );
-  };
+  }
 });
 
 router.delete('/:id', async (req, res) => {
-  const idUser = req.params.idUser;
-  const user = await Usuario.findOne({ idUser: idUser});
-
-  if(!user) {
-    res.status(422).send({ message: 'Usuário não encontrado!'});
-    return;
-  };
-
+  const { id } = req.params;
+  const user = await Usuario.findOne({ _id: id });
   try {
-    await Usuario.deleteOne({ idUser: idUser });
-    res.status(200).send({ message: "Usuario removido com sucesso!" });
+
+    if(!user) {
+      res.status(422).send({ message: 'Usuário não encontrado!'});
+      return;
+    }
+    await Usuario.deleteOne({ _id: id });
+    res.status(200).send({ message: 'Usuario removido com sucesso!' });
   } catch (err) {
     res.status(500).send({ err: err });
-  };
+  }
 });
 
 module.exports = router;
-
-
-
-// app.put('/usuario/:id', async (req, res) => {
-//   const id = req.params.id;
-
-//   const usuario = await usuarioModel.findById(id);
-//   const novoUsuario = req.body;
-
-//   await usuarioModel.findOneAndUpdate({ _id: id }, novoUsuario);
-  
-//   const usuarioAtualizado = await usuarioModel.findById(id);
-
-//   res.send(usuarioAtualizado);
-// });
-
-// app.delete('/usuario/:id', async (req, res) => {
-//   const id = req.params.id;
- 
-//   const usuario = await usuarioModel.findById(id);
-
-//   await usuarioModel.findByIdAndDelete(id);
-  
-//   res.send({ message: 'Usuário excluído com sucesso' });
-// });
