@@ -15,11 +15,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const idUser = req.params.idUser;
-    const userId = await Usuario.findOne({ idUser: idUser });
+    const id = req.params.id;
+    const userId = await Usuario.findOne({ _id: id });
     if(!userId) {
       res.status(422).send({ message: 'Usuário não encontrado!'});
-      return;
     }
     res.status(200).send(userId);
   } catch (err) {
@@ -40,22 +39,22 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
 
-router.put('/usuario/:id', async (req, res) => {
+
+router.put('/:id', async (req, res) => {
   try {
-    const upDateUser = await Usuario.updateOne({ idUser: idUse }, use);
+    const upDateUser = await Usuario.updateOne({ _id: id });
     if(upDateUser.matchedCount === 0) {
       res.status(422).send({ message: 'Usuário não encontrado!'});
       return;
     }
-    res.status(200).send({ message: `Usuario ${idUse} atualizado com sucesso!`});
+    res.status(200).send({ message: `Usuario ${id} atualizado com sucesso!`});
   } catch (err) {
-    res.status(500).send({ err: err });
+    res.status(500).send( {err: err.message } );
   };
 });
 
-router.delete('/usuario/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const idUser = req.params.idUser;
   const user = await Usuario.findOne({ idUser: idUser});
 
@@ -72,6 +71,7 @@ router.delete('/usuario/:id', async (req, res) => {
   };
 });
 
+module.exports = router;
 
 
 
