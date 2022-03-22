@@ -25,6 +25,9 @@ app.use(session({
 const usuarioRoutes = require('./routes/usuarioRoutes');
 app.use('/usuario', usuarioRoutes);
 
+const estanteRoutes = require('./routes/estanteRoutes');
+app.use('/estante', estanteRoutes);
+
 
 app.get('/', (_req, res) => {
   res.json({message: 'Bem-Vindo ao Projeto-Estante!'});

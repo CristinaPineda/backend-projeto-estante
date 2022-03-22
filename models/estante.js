@@ -1,9 +1,7 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+const mongoose = require('./connection');
 
 const estanteModel = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true },
     titulo: {
         type: String,
         required: true },
@@ -34,4 +32,6 @@ const estanteModel = new mongoose.Schema({
     
 });
 
-module.exports = estanteModel;
+const estante = mongoose.model('Estante', estanteModel);
+
+module.exports = estante;
