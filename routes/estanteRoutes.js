@@ -36,4 +36,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const book = await estante.findOne({ _id: id });
+  try {
+
+    if(!book) {
+      res.status(422).send({ message: 'Livro não encontrado!'});
+      return;
+    }
+    await estante.deleteOne({ _id: id });
+    res.status(200).send({ message: 'Livro removido com sucesso!' });
+  } catch (err) {
+    res.status(500).send({ err: err });
+  }
+});
+
 module.exports = router;
